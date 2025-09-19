@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise PDF Processing System</title>
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-robot"></i> Enterprise PDF Processing System</h1>
+                <p>Advanced AI-powered document analysis with multi-agent processing</p>
+                <div class="status-indicator" id="systemStatus">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Initializing...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="tab-btn active" onclick="showTab('dashboard')">
+                <i class="fas fa-chart-dashboard"></i> Dashboard
+            </button>
+            <button class="tab-btn" onclick="showTab('upload')">
+                <i class="fas fa-upload"></i> Upload Documents
+            </button>
+            <button class="tab-btn" onclick="showTab('query')">
+                <i class="fas fa-search"></i> Query Processing
+            </button>
+            <button class="tab-btn" onclick="showTab('documents')">
+                <i class="fas fa-file-pdf"></i> Document Library
+            </button>
+            <button class="tab-btn" onclick="showTab('monitoring')">
+                <i class="fas fa-chart-line"></i> System Monitoring
+            </button>
+        </nav>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Documents Processed</h3>
+                        <div class="stat-value" id="docCount">0</div>
+                        <div class="stat-change">+12 this week</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Queries Processed</h3>
+                        <div class="stat-value" id="queryCount">0</div>
+                        <div class="stat-change">+45 today</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Avg Processing Time</h3>
+                        <div class="stat-value" id="avgTime">0s</div>
+                        <div class="stat-change">-0.5s improvement</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-memory"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>System Memory</h3>
+                        <div class="stat-value" id="memoryUsage">0%</div>
+                        <div class="stat-change">Within normal range</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Charts -->
+            <div class="charts-section">
+                <div class="chart-container">
+                    <h3>Query Performance Trends</h3>
+                    <canvas id="performanceChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>System Resource Usage</h3>
+                    <canvas id="resourceChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="activity-section">
+                <h3>Recent Activity</h3>
+                <div class="activity-list" id="activityList">
+                    <div class="activity-item">
+                        <i class="fas fa-upload"></i>
+                        <span>Document "Financial_Report_Q4.pdf" processed successfully</span>
+                        <span class="activity-time">2 minutes ago</span>
+                    </div>
+                    <div class="activity-item">
+                        <i class="fas fa-search"></i>
+                        <span>Query processed: "Explain GIRR calculation"</span>
+                        <span class="activity-time">5 minutes ago</span>
+                    </div>
+                    <div class="activity-item">
+                        <i class="fas fa-cog"></i>
+                        <span>System configuration updated</span>
+                        <span class="activity-time">1 hour ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Tab -->
+        <div id="upload" class="tab-content">
+            <div class="upload-section">
+                <h2>Upload PDF Documents</h2>
+                <div class="upload-area" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>Drop PDF files here or click to browse</h3>
+                    <p>Supports multiple files up to 100MB each</p>
+                    <input type="file" id="fileInput" multiple accept=".pdf" hidden>
+                    <button class="btn-primary" onclick="document.getElementById('fileInput').click()">
+                        Select Files
+                    </button>
+                </div>
+                
+                <div id="uploadProgress" class="upload-progress" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">Uploading...</div>
+                </div>
+                
+                <div id="uploadResults" class="upload-results"></div>
+            </div>
+        </div>
+
+        <!-- Query Tab -->
+        <div id="query" class="tab-content">
+            <div class="query-section">
+                <h2>Advanced Query Processing</h2>
+                
+                <div class="query-form">
+                    <div class="query-input-container">
+                        <textarea id="queryInput" placeholder="Ask complex questions about your documents. Examples:
+• Explain GIRR calculation methodology
+• Compare revenue trends across all quarterly reports
+• Find all mentions of regulatory compliance issues
+• Analyze relationships between key stakeholders"></textarea>
+                        
+                        <div class="query-options">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="includeRelationships" checked>
+                                <span class="checkmark"></span>
+                                Include cross-document relationships
+                            </label>
+                            
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="streamResponse" checked>
+                                <span class="checkmark"></span>
+                                Stream response in real-time
+                            </label>
+                            
+                            <select id="processingMode">
+                                <option value="fast">Fast Processing</option>
+                                <option value="balanced" selected>Balanced Analysis</option>
+                                <option value="comprehensive">Comprehensive Analysis</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn-primary" onclick="processQuery()">
+                            <i class="fas fa-brain"></i> Process Query
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="queryStatus" class="processing-status" style="display: none;"></div>
+                
+                <div id="queryResponse" class="response-container" style="display: none;">
+                    <div class="response-header">
+                        <h3>Analysis Results</h3>
+                        <div class="confidence-badge" id="confidenceBadge"></div>
+                    </div>
+                    <div class="response-content" id="responseContent"></div>
+                    <div class="response-sources" id="responseSources"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Documents Tab -->
+        <div id="documents" class="tab-content">
+            <div class="documents-section">
+                <div class="documents-header">
+                    <h2>Document Library</h2>
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="documentSearch" placeholder="Search documents...">
+                    </div>
+                </div>
+                
+                <div class="documents-grid" id="documentsGrid">
+                    <!-- Documents will be loaded dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Monitoring Tab -->
+        <div id="monitoring" class="tab-content">
+            <div class="monitoring-section">
+                <h2>System Monitoring</h2>
+                
+                <div class="monitoring-grid">
+                    <div class="monitor-card">
+                        <h3>System Health</h3>
+                        <div class="health-indicators">
+                            <div class="indicator">
+                                <span class="indicator-label">API Status</span>
+                                <span class="indicator-status healthy">Healthy</span>
+                            </div>
+                            <div class="indicator">
+                                <span class="indicator-label">Database</span>
+                                <span class="indicator-status healthy">Connected</span>
+                            </div>
+                            <div class="indicator">
+                                <span class="indicator-label">Redis Cache</span>
+                                <span class="indicator-status healthy">Active</span>
+                            </div>
+                            <div class="indicator">
+                                <span class="indicator-label">Vector Store</span>
+                                <span class="indicator-status healthy">Indexed</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="monitor-card">
+                        <h3>Agent Performance</h3>
+                        <canvas id="agentPerformanceChart"></canvas>
+                    </div>
+                    
+                    <div class="monitor-card">
+                        <h3>System Logs</h3>
+                        <div class="log-container" id="systemLogs">
+                            <div class="log-entry info">
+                                <span class="log-time">14:32:15</span>
+                                <span class="log-level">INFO</span>
+                                <span class="log-message">Query processed successfully</span>
+                            </div>
+                            <div class="log-entry warning">
+                                <span class="log-time">14:30:42</span>
+                                <span class="log-level">WARN</span>
+                                <span class="log-message">High memory usage detected</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/dashboard.js"></script>
+    <script src="/static/js/charts.js"></script>
+    <script src="/static/js/websocket.js"></script>
+</body>
+</html>
